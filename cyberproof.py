@@ -3,7 +3,9 @@ import requests
 
 
 class Scanner:
-    def __init__(self):
+    def __init__(self, api_key):
+        self.api_key = api_key
+
         try:
             self.session = requests.Session()
         except requests.exceptions.RequestException as e:
@@ -14,26 +16,24 @@ class Scanner:
             self,
             url,
             file,
-            api_key,
     ):
 
         return self.session.post(
             url=url,
             files={'file': (file, open(file, 'rb'))},
-            params={'apikey': api_key},
+            params={'apikey': self.api_key},
         ).json()
 
     def retrieve_report(
             self,
             resource_id,
             url,
-            api_key,
     ):
 
         return self.session.post(
             url=url,
             params={
-                'apikey': api_key,
+                'apikey': self.api_key,
                 'resource': resource_id,
             },
         ).json()
@@ -47,18 +47,18 @@ if __name__ == '__main__':
         'file': 'EICAR-AV-Test.txt',
     }
 
-    file_scanner = Scanner()
+    file_scanner = Scanner(
+        SCANNER_CONF['api_key'],
+    )
 
     resource_id = file_scanner.upload_and_scan(
         SCANNER_CONF['scanner_url'],
         SCANNER_CONF['file'],
-        SCANNER_CONF['api_key']
     )['resource']
 
     file_dict = file_scanner.retrieve_report(
         str(resource_id),
         SCANNER_CONF['report_url'],
-        SCANNER_CONF['api_key'],
     )
 
     # there's no positives per engine as far as I could see so I couldn't match each engine to positives
