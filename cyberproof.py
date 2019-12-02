@@ -24,8 +24,12 @@ class Scanner:
 
         return self.session.post(
             url=url,
-            files={'file': (file, open(file, 'rb'))},
-            params={'apikey': self.api_key},
+            files={
+                'file': (file, open(file, 'rb')),
+            },
+            params={
+                'apikey': self.api_key
+            },
         ).json()
 
     def retrieve_report(
