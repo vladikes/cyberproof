@@ -30,6 +30,7 @@ class Scanner:
             url,
             api_key,
     ):
+
         return self.session.post(
             url=url,
             params={
